@@ -1,3 +1,6 @@
 dump.rdb
 **/node_modules
 **/dist
+**/.vscode
+server/yarn.lock
+client/yarn.lock

@@ -3,16 +3,25 @@ import { Formik, Form } from 'formik';
 import { withUrqlClient } from 'next-urql';
 import React from 'react';
 import { InputField } from '../components/InputField';
-import { Wrapper } from '../components/Wrapper';
+import { useCreatePostMutation } from '../generated/graphql';
 import { createUrqlClient } from '../utills/createUrlqClient';
+import { useRouter } from 'next/router';
+import { Layout } from '../components/Layout';
+import { useIsAuth } from '../utills/useIsAuth';
 
 const createPost: React.FC<{}> = ({}) => {
+	const router = useRouter();
+	useIsAuth();
+	const [, createPost] = useCreatePostMutation();
 	return (
-		<Wrapper variant='small'>
+		<Layout variant='small'>
 			<Formik
 				initialValues={{ title: '', text: '' }}
 				onSubmit={async (values) => {
-					console.log(values);
+					const { error } = await createPost({ input: values });
+					if (!error) {
+						router.push('/');
+					}
 				}}>
 				{(isSubmitting) => (
 					<Form>
@@ -32,7 +41,7 @@ const createPost: React.FC<{}> = ({}) => {
 					</Form>
 				)}
 			</Formik>
-		</Wrapper>
+		</Layout>
 	);
 };
 
